@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<link rel="shortcut icon" href="car.ico" type="image/x-icon" />
+		<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=30a69dedb72b9caf8489b35396d4d2cd"></script>
+		<script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/demo/convertor.js"></script>
+		<script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/demo/changeMore.js"></script>
+		<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCCiVgJbm-jORRRkkbgmt6wMLBe6ifRZhM&sensor=true">
+			var map;
+			var map_baidu;
+			var marker1;
+			var marker_baidu1;
+			var marker2;
+			var marker_baidu2;
+			var routePath;
+			var routePath_baidu;
+			var baiduroutePath;
+			var googleroutePath;
+			var routePath_con;
+			var routePath_baidu_con;
+			var baiduroutePath_con;
+			var googleroutePath_con;
+			var infowindow1;
+			var infowindow2;
+			var directionsDisplay;
+			var driving;
+			//var lushu;
+			var carggm;
+			var carhgm;
+			var carbbm;
+			var carhbm;
+		</script>
+		<link href="./css/CSS.css" rel="stylesheet" type="text/css" />
+		<!--<link href="./css/CSS-new.css" rel="stylesheet" type="text/css" />-->
+		<script type="text/javascript" src="./scripts/jquery-1.10.2.min.js"></script>
+		<script type="text/javascript" src="./scripts/input.js"></script>
+		<script type="text/javascript" src="./scripts/roadcondition.js"></script>
+		<script type="text/javascript" src="./scripts/map.js"></script>
+		<script type="text/javascript" src="./scripts/enter.js"></script>
+		<script type="text/javascript" src="./scripts/fcgi.js"></script>
+		<script type="text/javascript" src="./scripts/time.js"></script>
+		<script type="text/javascript" src="./scripts/tab.js"></script>
+		<script type="text/javascript" src="./scripts/winresize.js"></script>
+		<script type="text/javascript" src="./scripts/LuShu_min.js"></script>
+		<script type="text/javascript" src="./scripts/poi.js"></script>
+		<script type="text/javascript" src="./scripts/mercator.js"></script>
+		<script type="text/javascript" src="./scripts/demo.js"></script>
+		<title>Real-time Route Recommendation</title>
+	</head>
+	<body onload="initialize();getTime();tab()" onmousedown="mouseClick(event)">
+		<div style="position:absolute; width:100%; height:100%; z-index:-1">    
+			<img src="image/mapbackground.jpg" height="100%" width="100%"/>    
+		</div>
+		<div id="Page-container">
+			<div id="Header">
+				<div id="Title">Real-time Route Recommendation</div>
+				<!--<div id="Time"></div>-->
+				<div id="Hour"></div>
+			</div>
+			<div id="Pagebody">
+				<div id="Siderbar">
+					<div id="Inputbar">
+						<form name="inputform" id="inputform" action="javascript:{process()}">
+							<div id="Picture">
+								<img src="image/pic1.jpg" height="50px" style="vertical-align: middle; margin: 0 auto; margin-top: 3px; margin-left: 2px">
+							</div>
+							<div id="Launcher">
+								<input style="display: none" name="pointhide" id="pointhide">
+								<div class="line">
+									<!--div style="width: 29px; height: 29px; background: url(image/start.jpg) no-repeat; float:left; clear:left; overflow:hidden;">	
+									</div-->
+									<div align="center">
+										<input type="text" style="display: none;" id="start" name="start"  maxlength="2048" value="40.0003,116.3276">
+										<input type="text" style="width:210px;" name="starttext" id="starttext"  maxlength="2048" value="请输入起点" onkeydown="onkeyup1();" onkeyup="onkeyup1()" onfocus="javascript:if(this.value=='请输入起点')this.value='';">
+									</div>
+									<div class="auto_hidden" id="autostart"></div>
+									<script>
+										var autoCompletestart=new AutoComplete('starttext','autostart');//,['b0','b12','b22','b3','b4','b5','b6','b7','b8','b2','abd','ab','acd','accd','b1','cd','ccd','cbcv','cxf']);
+									</script>
+								</div>
+								<div class="line">
+									<!--div style="width: 29px; height: 29px; background: url(image/end.jpg) no-repeat; float:left; clear:left; overflow:hidden; ">
+									</div-->
+									<div align="center">
+										<input style="display: none" type="text" name="end" id="end" maxlength="2048"value="39.9067,116.4885">
+										<input style="width: 210px" type="text" name="endtext" id="endtext" maxlength="2048" value="请输入终点" onkeydown="onkeyup2();" onkeyup="onkeyup2()" onfocus="javascript:if(this.value=='请输入终点')this.value='';">
+									</div>
+									<div class="auto_hidden" id="autoend"></div>
+									<script>
+										var autoCompleteend=new AutoComplete('endtext','autoend');//,['b0','b12','b22','b3','b4','b5','b6','b7','b8','b2','abd','ab','acd','accd','b1','cd','ccd','cbcv','cxf']);
+										//数组里各项为实时返回的POI的地点名称
+									</script>
+								</div>
+								<div class="line" align="center">
+									<select id="routeState" style="width:100; float: left" name="routeState">
+										<option value="1" selected="true">时间最快</option>
+										<option value="2">路程最短</option>
+									</select>
+									<input type="hidden" id="settime" value="0"/><!--debug-->
+									<input type="submit" value="Search" style="cursor: pointer; background: url(image/searchBtn.png) no-repeat; line-height:24px;height:28px; font-size:14px;width:77px; text-align:center;  border:none;color: white; float: right" name="search_route" id="search_route"/>
+									<!--button style="margin: 0 auto;" onclick="googlecalcRoute()" >查询路线</button-->
+								</div>
+							</div>
+							<div id="Invertion">
+								<img src="image/invertion.jpg" height="24px" style="cursor:pointer; background: #F0F0F0; margin: 0 auto; margin-top: 17px; border: 1px; border-color: black" onclick="invertion()"></button>
+							</div>
+						</form>
+						<!--button style="margin: 0 auto;" onclick="googlecalcRoute()" >google</button-->
+					</div>
+					<div class="barDiv"></div>
+					<div id="CarPic">
+						<img src="image/carpic.png" height="23px" style="vertical-align: middle; margin: 0 auto; margin-top: 3px; margin-left: 2px">
+					</div>
+					<div class="line" style="text-align: left; color: black; margin-top: 15px; font-size: 15px">推荐路径</div>
+					<div id="wrap">
+						<ul id="tab_t">
+							<li class="act">HANA系统</li>
+							<li><img src="image/google.jpg" height="15px" style="vertical-align: middle; margin-right: 1px">google地图</li>
+							<li><img src="image/baidu.jpg" height="15px" style="vertical-align: middle; margin-right: 2px">百度地图</li>
+						</ul>
+						<div id="tab_c">
+							<div id="hana"></div>
+							<div id="google" class="hide"></div>
+							<div id="baidu" class="hide"></div>
+						</div>
+					</div> 
+					<div style="margin: 0 auto;clear: both">
+						<button onclick="comparewithgg();" style="text-align: center; width: 120px; height: 30px; margin: 0 auto; margin-left: 25px; color: white; background: #0072E3; cursor: pointer; border-color: #0072E3; float: left;">对比Google</button>
+						<button onclick="comparewithbd();" style="text-align: center; width: 120px; height: 30px; margin: 0 auto; margin-left: 25px; color: white; background: #0072E3; cursor: pointer; border-color: #0072E3;">对比Baidu</button>
+						<button onclick="offline();" style="text-align: center; width: 120px; height: 30px; margin: 10px auto; margin-left: 25px; color: white; background: #0072E3; cursor: pointer; border-color: #0072E3; float: left;">经验模型</button>
+						<button onclick="online();" style="text-align: center; width: 120px; height: 30px; margin: 10px auto; margin-left: 25px; color: white; background: #0072E3; cursor: pointer; border-color: #0072E3;">实时模型</button>
+					</div>
+					<div><img src="image/comparison.png" height="23px" style="width: 300px; vertical-align: middle; margin: 0 auto; margin-top: 10px; margin-left: 10px; clear: both"></div>
+				</div>
+				<div id="Content">
+					<div id="map_canvas"></div>
+					<div id="map_canvas_baidu"></div>
+				</div>
+			</div>
+			<div id="Footer">
+				<img src="image/sap_logo.png" height="14px" style="vertical-align: middle"> &nbsp;Powered by SAP HANA & 清华大学&nbsp;<img src="image/THU.jpg" height="14px" style="vertical-align: middle">
+			</div>
+		</div>
+	</body>
+</html>

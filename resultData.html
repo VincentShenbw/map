@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=30a69dedb72b9caf8489b35396d4d2cd"></script>
+	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCCiVgJbm-jORRRkkbgmt6wMLBe6ifRZhM&sensor=true"></script>
+	<script type="text/javascript" src="./scripts/datageneration.js"></script>
+	<script type="text/javascript" src="./scripts/resultgeneration.js"></script>
+	<title>Result Data</title>
+</head>
+<body>
+	<div>
+	<input type = "text" id = "itemNum" value = "5">
+	<button onclick = "datageneration();">display</button>
+	</div>
+	<div>
+		<table id = "result">
+				<tr>
+					<th>No</th>
+					<th>Start</th>
+					<th>End</th>
+					<th>RRR dis,dur</th>
+					<th>Google dis,dur</th>
+					<th>Baidu dis,dur</th>
+				</tr>
+		</table>
+	</div>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #map_canvas { height: 100% }
+    </style>
+    <script type="text/javascript">
+var ajaxFcgi;
+
+function process()
+{
+	var query="query=tsinghua";
+	fcgiPost(query);
+}
+
+function fcgiPost(query)
+{
+	ajaxFcgi=GetXmlHttpObject();
+	if(ajaxFcgi==null)
+	{
+		alert("您的浏览器不支持,AJAX")
+		return;
+	}
+	var url="server.fcgi?";
+	url=url+query;
+	ajaxFcgi.onreadystatechange=stateChanged;
+	ajaxFcgi.open("POST",url,true);
+	ajaxFcgi.send(url);
+}
+function stateChanged()
+{
+	if(ajaxFcgi.readyState==4)
+	{
+		alert(ajaxFcgi.responseText);
+	}
+}
+function GetXmlHttpObject()//该函数的作用是解决为不同浏览器创建不同的 XMLHTTP 对象的问题
+{
+	var xmlHttp=null;
+	try
+	{
+	// Firefox, Opera 8.0+, Safari
+		xmlHttp=new XMLHttpRequest();
+	}
+	catch(e)
+	{
+		try
+		{
+		// Internet Explorer
+			xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
+		}
+		catch(e)
+		{
+			xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	}
+	return xmlHttp;
+}
+
+    </script>
+  </head>
+  <body>
+	<input type="button" id = "querytext" style = "width: 10%"  onclick = "process();" value="Click Me"/>
+  </body>
+</html>
